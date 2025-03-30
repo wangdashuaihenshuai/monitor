@@ -44,17 +44,19 @@ export class CameraStateMachine {
   private setupEventListeners(): void {
     // 连接事件
     this.wsManager.addEventListener(EventType.Connect, (event) => {
+      console.log('connect..', this.status)
       if (this.status === DeviceStatus.Wait) {
         this.updateStatus(DeviceStatus.Connected);
 
-        // 检查房间内是否有Monitor设备
-        const payload = event.payload as { devices: any[] };
-        const monitorDevice = payload.devices.find(device => device.type === DeviceType.Monitor);
+      }
 
-        if (monitorDevice) {
-          this.monitorDeviceId = monitorDevice.id;
-          this.initLocalStream();
-        }
+      // 检查房间内是否有Monitor设备
+      const payload = event.payload as { devices: any[] };
+      const monitorDevice = payload.devices.find(device => device.type === DeviceType.Monitor);
+
+      if (monitorDevice) {
+        this.monitorDeviceId = monitorDevice.id;
+        this.initLocalStream();
       }
     });
 
@@ -135,6 +137,7 @@ export class CameraStateMachine {
 
   // 加入房间
   async joinRoom(): Promise<void> {
+    console.log('joinRoom....', this.status)
     if (this.status !== DeviceStatus.Init) {
       console.warn('只有在Init状态才能加入房间');
       return;
@@ -157,6 +160,12 @@ export class CameraStateMachine {
 
   // 初始化本地媒体流
   private async initLocalStream(): Promise<void> {
+    // 添加状态判断，只有在Connected状态下才初始化媒体流
+    if (this.status !== DeviceStatus.Connected) {
+      console.warn(`当前状态(${this.status})不适合初始化媒体流，需要在Connected状态下操作`);
+      return;
+    }
+
     try {
       this.localStream = await navigator.mediaDevices.getUserMedia({
         video: true,

@@ -23,12 +23,44 @@ const CameraPage: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const stateMachineRef = useRef<CameraStateMachine | null>(null);
 
+  // 请求摄像头权限
+  const requestCameraPermission = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+      setIsCameraPermissionDenied(false);
+
+      // 直接设置本地视频流到视频元素
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+      }
+
+      // 不再尝试调用不存在的setLocalStream方法
+      // 如果状态机已经初始化，可以考虑重新初始化或使用其他方法关联流
+      if (stateMachineRef.current) {
+        // 这里可能需要根据CameraStateMachine的实际接口进行调整
+        // 例如，可能需要先离开房间，然后用新的流重新加入
+        stateMachineRef.current.leaveRoom();
+        setTimeout(() => {
+          if (stateMachineRef.current) {
+            stateMachineRef.current.joinRoom();
+          }
+        }, 500);
+      }
+    } catch (error) {
+      console.error('摄像头权限被拒绝:', error);
+      setIsCameraPermissionDenied(true);
+    }
+  };
+
   // 初始化状态机
   useEffect(() => {
     if (!roomId) {
       alert('房间ID不能为空');
       return;
     }
+
+    // 请求摄像头权限 - 移到这里确保尽早获取摄像头流
+    requestCameraPermission();
 
     if (!stateMachineRef.current) {
       console.log('初始化状态机');
@@ -47,11 +79,7 @@ const CameraPage: React.FC = () => {
         }
       });
       stateMachineRef.current = stateMachine;
-      stateMachineRef.current.joinRoom();
     }
-
-    // 请求摄像头权限
-    requestCameraPermission();
 
     return () => {
       // 组件卸载时清理资源
@@ -61,26 +89,17 @@ const CameraPage: React.FC = () => {
     };
   }, [deviceId, roomId, wsUrl]);
 
+  // 移除或修改这个useEffect，因为我们已经在requestCameraPermission中设置了视频流
   // 更新视频流
   useEffect(() => {
-    if (stateMachineRef.current && videoRef.current) {
+    // 只在状态变化且本地视频流未设置时更新
+    if (stateMachineRef.current && videoRef.current && !videoRef.current.srcObject) {
       const localStream = stateMachineRef.current.getLocalStream();
       if (localStream) {
         videoRef.current.srcObject = localStream;
       }
     }
   }, [status]);
-
-  // 请求摄像头权限
-  const requestCameraPermission = async () => {
-    try {
-      await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-      setIsCameraPermissionDenied(false);
-    } catch (error) {
-      console.error('摄像头权限被拒绝:', error);
-      setIsCameraPermissionDenied(true);
-    }
-  };
 
   // 加入房间
   const handleJoinRoom = async () => {

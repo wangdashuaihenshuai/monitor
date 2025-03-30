@@ -3,6 +3,8 @@ package main
 import (
 	"log"
 	"net/http"
+	"os"
+	"path/filepath"
 
 	"github.com/gin-gonic/gin"
 
@@ -11,6 +13,18 @@ import (
 )
 
 func main() {
+	// 获取环境变量或使用默认值
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "11100"
+	}
+
+	// 允许的跨域来源
+	allowOrigin := os.Getenv("ALLOW_ORIGIN")
+	if allowOrigin == "" {
+		allowOrigin = "*"
+	}
+
 	// 创建服务实例
 	roomService := service.NewRoomService()
 	eventService := service.NewEventService(roomService)
@@ -21,7 +35,7 @@ func main() {
 
 	// 设置CORS
 	r.Use(func(c *gin.Context) {
-		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+		c.Writer.Header().Set("Access-Control-Allow-Origin", allowOrigin)
 		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
 		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
 		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT, DELETE")
@@ -96,9 +110,25 @@ func main() {
 		})
 	}
 
+	// 提供前端静态文件
+	r.NoRoute(func(c *gin.Context) {
+		// 静态文件目录路径
+		staticDir := "./public"
+		filePath := filepath.Join(staticDir, c.Request.URL.Path)
+
+		// 如果请求的文件不存在，返回 index.html
+		if _, err := os.Stat(filePath); os.IsNotExist(err) {
+			c.File(filepath.Join(staticDir, "index.html"))
+			return
+		}
+
+		// 提供静态文件
+		c.File(filePath)
+	})
+
 	// 启动服务器
-	log.Println("Server started on :8080")
-	if err := r.Run(":8080"); err != nil {
+	log.Printf("Server started on :%s", port)
+	if err := r.Run(":" + port); err != nil {
 		log.Fatalf("Failed to start server: %v", err)
 	}
 }

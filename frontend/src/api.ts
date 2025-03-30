@@ -1,8 +1,22 @@
 import axios from 'axios';
 import { Device } from './types';
 
-// API 基础URL
-const API_BASE_URL = 'http://localhost:8080';
+// API 基础URL - 根据环境变量或构建环境确定
+const getApiBaseUrl = () => {
+  // 生产环境下使用相对路径，这样可以通过反向代理访问API
+  return '';
+};
+
+const API_BASE_URL = getApiBaseUrl();
+
+// WebSocket URL
+const getWebSocketBaseUrl = () => {
+  // 生产环境使用相对路径并自动判断协议
+  const isSecure = window.location.protocol === 'https:';
+  return `${isSecure ? 'wss' : 'ws'}://${window.location.host}`;
+};
+
+const WS_BASE_URL = getWebSocketBaseUrl();
 
 // 房间类型定义
 export interface Room {
@@ -44,7 +58,7 @@ export const api = {
 
   // WebSocket 连接URL生成函数
   getWebSocketUrl: (roomId: string): string => {
-    return `ws://localhost:8080/ws/${roomId}`;
+    return `${WS_BASE_URL}/ws/${roomId}`;
   }
 };
 

@@ -35,8 +35,8 @@ export class WebSocketManager {
           reject(error);
         };
 
-        this.ws.onclose = () => {
-          console.log('WebSocket连接关闭');
+        this.ws.onclose = (event) => {
+          console.log(`WebSocket连接关闭 - 代码: ${event.code}, 原因: ${event.reason || '未提供'}, 是否干净关闭: ${event.wasClean}`);
           this.attemptReconnect();
         };
       } catch (error) {
