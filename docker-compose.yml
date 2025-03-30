@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+  monitor:
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+    ports:
+      - "11100:11100"
+    environment:
+      - PORT=11100
+      - ALLOW_ORIGIN=*
+    restart: always
+    volumes:
+      - ./logs:/app/logs
