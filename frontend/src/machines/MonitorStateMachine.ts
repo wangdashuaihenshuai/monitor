@@ -417,16 +417,6 @@ export class MonitorStateMachine {
     }
   }
 
-  // 重置所有Camera连接
-  private resetAllCameraConnections(): void {
-    this.cameraConnections.forEach((connection, cameraId) => {
-      connection.reset();
-      if (this.cameraConnectionCallback) {
-        this.cameraConnectionCallback(cameraId, 'updated');
-      }
-    });
-  }
-
   // 关闭所有Camera连接
   private closeAllCameraConnections(): void {
     this.cameraConnections.forEach((connection, cameraId) => {

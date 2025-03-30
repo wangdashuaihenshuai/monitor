@@ -34,7 +34,7 @@ COPY --from=backend-builder /app/monitor .
 
 # 创建 public 目录并从前端构建阶段复制构建产物
 RUN mkdir -p /app/public
-COPY --from=frontend-builder /app/build/ /app/public/
+COPY --from=frontend-builder /app/dist/ /app/public/
 
 # 设置环境变量
 ENV PORT=11100
