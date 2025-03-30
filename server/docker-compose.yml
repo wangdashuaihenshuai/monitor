@@ -4,7 +4,7 @@ services:
   monitor:
     build:
       context: .
-      dockerfile: server/Dockerfile
+      dockerfile: Dockerfile
     ports:
       - "11100:11100"
     environment:
