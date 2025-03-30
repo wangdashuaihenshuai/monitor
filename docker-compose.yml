@@ -2,9 +2,7 @@ version: '3'
 
 services:
   monitor:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: monitor:latest
     ports:
       - "11100:11100"
     environment:

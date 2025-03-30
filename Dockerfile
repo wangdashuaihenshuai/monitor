@@ -4,10 +4,10 @@ FROM node:23-alpine AS frontend-builder
 WORKDIR /app
 
 # 复制前端代码
-COPY ../frontend /app/
+COPY ./frontend /app/
 
 # 安装依赖并构建
-RUN npm install && npm run build
+RUN yarn install && yarn build
 
 # 第二阶段：构建后端
 FROM golang:1.24-alpine AS backend-builder
@@ -15,11 +15,11 @@ FROM golang:1.24-alpine AS backend-builder
 WORKDIR /app
 
 # 复制 go.mod 和 go.sum 文件
-COPY go.mod go.sum ./
+COPY ./server/go.mod go.sum ./
 RUN go mod download
 
 # 复制源代码
-COPY . .
+COPY ./server .
 
 # 构建应用
 RUN CGO_ENABLED=0 GOOS=linux go build -o monitor .
