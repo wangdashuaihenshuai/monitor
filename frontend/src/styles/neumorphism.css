@@ -1,0 +1,58 @@
+/* QR码区域样式 */
+.qr-container {
+  position: relative;
+  padding: 16px;
+  border-radius: 12px;
+  background: linear-gradient(145deg, #e6e9ef, #ffffff);
+  box-shadow:
+    5px 5px 10px rgba(166, 180, 200, 0.7),
+    -5px -5px 10px rgba(255, 255, 255, 0.8);
+}
+
+/* 覆盖Tailwind的阴影样式，使用更柔和的Neumorphism风格 */
+.neumorphism {
+  background: linear-gradient(145deg, #e6e9ef, #ffffff);
+  box-shadow:
+    5px 5px 10px rgba(166, 180, 200, 0.25),
+    -5px -5px 10px rgba(255, 255, 255, 0.6);
+}
+
+.neumorphism-inset {
+  background: linear-gradient(145deg, #f1f5f9, #f8fafc);
+  box-shadow:
+    inset 2px 2px 5px rgba(166, 180, 200, 0.3),
+    inset -2px -2px 5px rgba(255, 255, 255, 0.8);
+}
+
+/* 标签特效 */
+.badge-dot {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #10b981;
+}
+
+/* 输入框焦点样式 */
+.input-focus:focus {
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+}
+
+/* 脉冲动画 */
+.animate-pulse-slow {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+}

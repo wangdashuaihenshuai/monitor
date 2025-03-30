@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>创建监控房间 - 多端视频监控系统</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background-color: #f8fafc;
+      -webkit-tap-highlight-color: transparent;
+      overscroll-behavior: none;
+    }
+
+    .input-focus:focus {
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+    }
+
+    .animate-pulse-slow {
+      animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.5;
+      }
+    }
+
+    /* QR码区域样式 */
+    .qr-container {
+      position: relative;
+      padding: 16px;
+      border-radius: 12px;
+      background: linear-gradient(145deg, #e6e9ef, #ffffff);
+      box-shadow:
+        5px 5px 10px rgba(166, 180, 200, 0.7),
+        -5px -5px 10px rgba(255, 255, 255, 0.8);
+    }
+
+    /* 覆盖Tailwind的阴影样式，使用更柔和的Neumorphism风格 */
+    .neumorphism {
+      background: linear-gradient(145deg, #e6e9ef, #ffffff);
+      box-shadow:
+        5px 5px 10px rgba(166, 180, 200, 0.25),
+        -5px -5px 10px rgba(255, 255, 255, 0.6);
+    }
+
+    .neumorphism-inset {
+      background: linear-gradient(145deg, #f1f5f9, #f8fafc);
+      box-shadow:
+        inset 2px 2px 5px rgba(166, 180, 200, 0.3),
+        inset -2px -2px 5px rgba(255, 255, 255, 0.8);
+    }
+
+    /* 标签特效 */
+    .badge-dot {
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: #10b981;
+    }
+  </style>
+</head>
+
+<body class="text-slate-800">
+  <div class="min-h-screen flex flex-col">
+    <!-- 头部导航栏 -->
+    <header class="bg-white shadow-sm">
+      <div class="container mx-auto px-4 py-4 flex items-center">
+        <a href="monitor.html" class="mr-4 text-slate-600 hover:text-slate-900">
+          <i class="fas fa-arrow-left"></i>
+        </a>
+        <h1 class="text-xl font-semibold">创建监控房间</h1>
+      </div>
+    </header>
+
+    <!-- 主要内容 -->
+    <main class="flex-1 container mx-auto px-4 py-6 max-w-3xl">
+      <div class="grid md:grid-cols-2 gap-6">
+        <!-- 左侧：创建房间表单 -->
+        <div class="bg-white rounded-xl shadow-sm p-6">
+          <h2 class="text-lg font-semibold mb-4">房间设置</h2>
+
+          <form>
+            <div class="space-y-4">
+              <!-- 房间名称 -->
+              <div>
+                <label for="roomName" class="block text-sm font-medium text-gray-700 mb-1">房间名称</label>
+                <div class="relative rounded-md">
+                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <i class="fas fa-tag text-gray-400"></i>
+                  </div>
+                  <input type="text" id="roomName" name="roomName"
+                    class="input-focus block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="例如：办公室监控">
+                </div>
+              </div>
+
+              <!-- 房间密码（可选） -->
+              <div>
+                <div class="flex justify-between items-center mb-1">
+                  <label for="password" class="block text-sm font-medium text-gray-700">访问密码</label>
+                  <span class="text-xs text-gray-500">可选</span>
+                </div>
+                <div class="relative rounded-md">
+                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <i class="fas fa-lock text-gray-400"></i>
+                  </div>
+                  <input type="password" id="password" name="password"
+                    class="input-focus block w-full pl-10 pr-10 py-2.5 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="设置访问密码">
+                  <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                    <button type="button" class="text-gray-400 hover:text-gray-600 focus:outline-none"
+                      id="togglePassword">
+                      <i class="fas fa-eye"></i>
+                    </button>
+                  </div>
+                </div>
+                <p class="mt-1 text-xs text-gray-500">如不设置密码，任何人都可使用房间ID进入</p>
+              </div>
+            </div>
+
+            <!-- 创建按钮 -->
+            <div class="mt-6">
+              <button type="button" id="createRoomBtn"
+                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-4 rounded-md transition duration-150 flex items-center justify-center">
+                <i class="fas fa-plus-circle mr-2"></i>
+                创建监控房间
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- 右侧：房间创建成功及二维码 -->
+        <div id="roomCreated" class="hidden bg-white rounded-xl shadow-sm p-6 md:flex flex-col">
+          <div class="flex items-center justify-center flex-col flex-1">
+            <div class="w-full mb-6">
+              <div
+                class="rounded-full bg-green-100 text-green-600 w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-check-circle text-3xl"></i>
+              </div>
+              <h2 class="text-xl font-semibold text-center mb-1">房间创建成功！</h2>
+              <p class="text-gray-500 text-sm text-center">请使用以下房间ID或二维码邀请设备加入</p>
+            </div>
+
+            <!-- 房间ID显示 -->
+            <div class="bg-slate-50 rounded-lg py-3 px-4 flex justify-between items-center w-full mb-6">
+              <div>
+                <div class="text-sm text-gray-500">房间ID</div>
+                <div class="text-2xl font-semibold tracking-wider">531892</div>
+              </div>
+              <button class="p-2 text-blue-600 hover:bg-blue-50 rounded-md">
+                <i class="fas fa-copy"></i>
+              </button>
+            </div>
+
+            <!-- 二维码 -->
+            <div class="qr-container flex flex-col items-center mb-6">
+              <!-- 实际应用中会用真实QR码替换此图像 -->
+              <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=room:531892" alt="房间二维码"
+                class="w-40 h-40">
+              <div class="text-xs text-gray-500 mt-2">扫描此二维码快速加入房间</div>
+            </div>
+
+            <div class="w-full space-y-3">
+              <!-- 添加进入房间按钮 -->
+              <button id="enterRoomBtn"
+                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-4 rounded-md transition duration-150 flex items-center justify-center">
+                <i class="fas fa-sign-in-alt mr-2"></i>
+                进入监控房间
+              </button>
+
+              <button
+                class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium py-2.5 px-4 rounded-md transition duration-150 flex items-center justify-center">
+                <i class="fas fa-share-alt mr-2"></i>
+                分享邀请链接
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // 密码显示切换
+      const togglePassword = document.getElementById('togglePassword');
+      const password = document.getElementById('password');
+
+      if (togglePassword && password) {
+        togglePassword.addEventListener('click', function () {
+          const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+          password.setAttribute('type', type);
+
+          // 切换图标
+          this.querySelector('i').classList.toggle('fa-eye');
+          this.querySelector('i').classList.toggle('fa-eye-slash');
+        });
+      }
+
+      // 自动录制开关
+      const autoRecord = document.getElementById('autoRecord');
+      if (autoRecord) {
+        autoRecord.addEventListener('change', function () {
+          const parent = this.parentNode;
+          const background = parent.querySelector('.block');
+          const dot = parent.querySelector('.dot');
+
+          if (this.checked) {
+            background.classList.remove('bg-gray-300');
+            background.classList.add('bg-blue-600');
+            dot.classList.add('translate-x-5');
+          } else {
+            background.classList.remove('bg-blue-600');
+            background.classList.add('bg-gray-300');
+            dot.classList.remove('translate-x-5');
+          }
+        });
+      }
+
+      // 视频质量选择
+      const qualityOptions = document.querySelectorAll('input[name="quality"]');
+      qualityOptions.forEach(option => {
+        option.addEventListener('change', function () {
+          // 重置所有标签样式
+          qualityOptions.forEach(opt => {
+            const label = opt.closest('label');
+            label.className = "flex items-center justify-center bg-slate-50 hover:bg-slate-100 cursor-pointer border border-slate-200 rounded py-2 px-3";
+          });
+
+          // 设置选中标签样式
+          if (this.checked) {
+            const label = this.closest('label');
+            label.className = "flex items-center justify-center bg-blue-50 border-blue-200 border-2 cursor-pointer rounded py-2 px-3";
+          }
+        });
+      });
+
+      // 创建房间按钮点击事件
+      const createRoomBtn = document.getElementById('createRoomBtn');
+      const roomCreated = document.getElementById('roomCreated');
+
+      if (createRoomBtn && roomCreated) {
+        createRoomBtn.addEventListener('click', function () {
+          // 在实际应用中，这里应该发送请求创建房间
+
+          // 模拟加载状态
+          this.disabled = true;
+          this.innerHTML = '<i class="fas fa-circle-notch fa-spin mr-2"></i> 创建中...';
+
+          // 延迟2秒模拟请求
+          setTimeout(() => {
+            // 显示创建成功页面
+            roomCreated.classList.remove('hidden');
+
+            // 在移动端需要滚动到结果区域
+            if (window.innerWidth < 768) {
+              roomCreated.scrollIntoView({ behavior: 'smooth' });
+            }
+
+            // 恢复按钮状态
+            this.disabled = false;
+            this.innerHTML = '<i class="fas fa-plus-circle mr-2"></i> 创建监控房间';
+          }, 1500);
+        });
+      }
+
+      // 添加进入房间按钮点击事件
+      const enterRoomBtn = document.getElementById('enterRoomBtn');
+      if (enterRoomBtn) {
+        enterRoomBtn.addEventListener('click', function () {
+          // 获取房间ID，在实际应用中应该是从创建结果中获取
+          const roomId = document.querySelector('.tracking-wider').textContent;
+          // 跳转到房间页面
+          window.location.href = `room.html?id=${roomId}`;
+        });
+      }
+    });
+  </script>
+</body>
+
+</html>

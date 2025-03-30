@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>加入房间 - 多端视频监控系统</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background-color: #f5f7fa;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .input-focus:focus {
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+    }
+
+    .bottom-safe-area {
+      padding-bottom: env(safe-area-inset-bottom, 20px);
+    }
+  </style>
+</head>
+
+<body class="bg-slate-50 text-gray-800">
+  <div class="min-h-screen flex flex-col">
+    <!-- 顶部导航栏 -->
+    <header class="bg-white shadow-sm">
+      <div class="px-4 py-4 flex items-center justify-center relative">
+        <h1 class="text-xl font-semibold text-center">加入房间</h1>
+      </div>
+    </header>
+
+    <!-- 主要内容区域 -->
+    <main class="flex-1 px-5 py-8 flex flex-col">
+      <!-- 欢迎文本 -->
+      <div class="mb-8 text-center">
+        <i class="fa-solid fa-video text-blue-500 text-5xl mb-3"></i>
+        <h2 class="text-2xl font-bold text-gray-800 mb-2">视频拍摄端</h2>
+        <p class="text-gray-600">加入一个监控房间开始实时共享视频</p>
+      </div>
+
+      <!-- 表单区域 -->
+      <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+        <form class="space-y-5">
+          <div>
+            <label for="roomId" class="block text-sm font-medium text-gray-700 mb-1">房间ID</label>
+            <div class="relative rounded-md">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <i class="fas fa-home text-gray-400"></i>
+              </div>
+              <input type="text" id="roomId" name="roomId"
+                class="input-focus block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="输入六位房间ID">
+              <div class="absolute inset-y-0 right-0 flex items-center pr-3">
+                <button type="button" class="p-1 text-blue-600">
+                  <i class="fas fa-qrcode"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <label for="deviceName" class="block text-sm font-medium text-gray-700 mb-1">设备名称</label>
+            <div class="relative rounded-md">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <i class="fas fa-mobile-alt text-gray-400"></i>
+              </div>
+              <input type="text" id="deviceName" name="deviceName"
+                class="input-focus block w-full pl-10 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="输入此设备的识别名称">
+            </div>
+          </div>
+
+          <div class="pt-2">
+            <button type="button" onclick="window.location.href='camera_main.html'"
+              class="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 px-4 rounded-lg transition duration-200 flex items-center justify-center">
+              <i class="fas fa-sign-in-alt mr-2"></i>
+              加入房间
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- 历史连接记录 -->
+      <div class="bg-white rounded-xl shadow-sm p-6">
+        <h3 class="text-sm font-medium text-gray-700 mb-3">近期连接</h3>
+
+        <div class="space-y-3">
+          <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 cursor-pointer">
+            <div class="flex items-center">
+              <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-500">
+                <i class="fas fa-building"></i>
+              </div>
+              <div class="ml-3">
+                <p class="text-sm font-medium">办公室监控</p>
+                <p class="text-xs text-gray-500">房间ID: 531892</p>
+              </div>
+            </div>
+            <div>
+              <i class="fas fa-chevron-right text-gray-400"></i>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 cursor-pointer">
+            <div class="flex items-center">
+              <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center text-green-500">
+                <i class="fas fa-home"></i>
+              </div>
+              <div class="ml-3">
+                <p class="text-sm font-medium">家庭摄像头</p>
+                <p class="text-xs text-gray-500">房间ID: 678321</p>
+              </div>
+            </div>
+            <div>
+              <i class="fas fa-chevron-right text-gray-400"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- 底部版本信息 -->
+    <footer class="mt-auto bottom-safe-area py-4 px-5 text-center text-gray-500 text-xs">
+      <p>多端视频监控系统 v1.0</p>
+    </footer>
+  </div>
+</body>
+
+</html>
