@@ -15,7 +15,7 @@ FROM golang:1.24-alpine AS backend-builder
 WORKDIR /app
 
 # 复制 go.mod 和 go.sum 文件
-COPY ./server/go.mod go.sum ./
+COPY ./server/go.mod ./server/go.sum ./
 RUN go mod download
 
 # 复制源代码
