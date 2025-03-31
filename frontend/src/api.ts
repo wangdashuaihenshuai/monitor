@@ -10,7 +10,7 @@ const getApiBaseUrl = () => {
 const API_BASE_URL = getApiBaseUrl();
 
 // WebSocket URL
-const getWebSocketBaseUrl = () => {
+export const getWebSocketBaseUrl = () => {
   // 生产环境使用相对路径并自动判断协议
   const isSecure = window.location.protocol === 'https:';
   return `${isSecure ? 'wss' : 'ws'}://${window.location.host}`;

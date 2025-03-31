@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { MonitorStateMachine } from '../machines/MonitorStateMachine';
 import { DeviceStatus } from '../types';
+import { getWebSocketBaseUrl } from '../api';
 
 const MonitorPage: React.FC = () => {
   // 状态管理
@@ -13,7 +14,7 @@ const MonitorPage: React.FC = () => {
   });
   const [roomIdError, setRoomIdError] = useState<boolean>(roomId === '');
   const [status, setStatus] = useState<DeviceStatus>(DeviceStatus.Init);
-  const [wsUrl] = useState<string>('ws://localhost:8080/ws/room');
+  const [wsUrl] = useState<string>(`${getWebSocketBaseUrl()}/ws/room`);
   const [isJoined, setIsJoined] = useState<boolean>(roomId !== '');  // 修改：有房间号时默认加入
   const [errorMessage, setErrorMessage] = useState<string>(roomId === '' ? '请提供房间ID' : '');
   const [cameraStreams, setCameraStreams] = useState<Map<string, MediaStream>>(new Map());

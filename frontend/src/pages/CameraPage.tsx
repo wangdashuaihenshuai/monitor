@@ -3,13 +3,14 @@ import { CameraStateMachine } from '../machines/CameraStateMachine';
 import { DeviceStatus } from '../types';
 import '../styles/camera.css';
 import { useSearchParams } from 'react-router-dom';
+import { getWebSocketBaseUrl } from '../api';
 const CameraPage: React.FC = () => {
   // 状态管理
   const [searchParams] = useSearchParams();
   const [deviceId] = useState<string>('camera_' + Math.random().toString(36).substring(2, 9));
   const [roomId] = useState<string | null>(searchParams.get('roomId'));
   const [status, setStatus] = useState<DeviceStatus>(DeviceStatus.Init);
-  const [wsUrl] = useState<string>('ws://localhost:8080/ws/room');
+  const [wsUrl] = useState<string>(`${getWebSocketBaseUrl()}/ws/room`);
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [isRecording, setIsRecording] = useState<boolean>(false);
   const [networkQuality] = useState<number>(3); // 1-4, 4为最佳
